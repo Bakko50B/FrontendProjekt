@@ -113,7 +113,7 @@ async function getNearbyPlaces(lat, lon) {
 
     const radius = 10000; // 10 km radie
     const url = `https://api.geoapify.com/v2/places?categories=${categoriesString}&filter=circle:${lon},${lat},${radius}&bias=proximity:${lon},${lat}&lang=sv&limit=10&apiKey=${placesApiKey}`;
-    console.log(url); // För debugging
+    //console.log(url); 
 
     try {
         attractionsLayer.clearLayers(); // Rensa tidigare sevärdhetsmarkörer
@@ -123,12 +123,13 @@ async function getNearbyPlaces(lat, lon) {
 
         let placesInfo = "<b>Resulatet:</b><ul>";
         
-
         data.features.forEach(place => {
             if (place.properties.name) {
                 let name = place.properties.name;
                 let placeLat = place.geometry.coordinates[1];
                 let placeLon = place.geometry.coordinates[0];
+                let city = place.properties.city || "";
+                let googleSearchUrl = `https://www.google.com/search?q=${encodeURIComponent(name + ' ' + city)}`;
 
                 // Lägg till markör för sevärdheten
                 L.marker([placeLat, placeLon])
@@ -137,10 +138,10 @@ async function getNearbyPlaces(lat, lon) {
                         autoPan: true, // Flytta kartan om popup hamnar utanför vyn
                         autoPanPadding: [20, 20], // Marginal runt popupen
                         maxWidth: 300 // Begränsa bredden på popupen
-            })
-            .openPopup();
+                    })
+                    .openPopup();
 
-                placesInfo += `<li>${name}</li>`;
+                placesInfo += `<li><a href="${googleSearchUrl}" target="_blank">${name}</a></li>`;
             }
         });
         placesInfo += "</ul>";
@@ -317,48 +318,3 @@ map.on('click', function (e) {
     showInfo(lat, lon);
 });
 
-
-/**map.on('click', async function (e) {
-    const lat = e.latlng.lat;
-    const lon = e.latlng.lng;
-
-    // Hämta data från OpenWeatherMap
-    const openWeatherUrl = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${weatherApiKey}&units=metric`;
-    
-    // Hämta data från SMHI
-    const smhiUrl = `https://cors-anywhere.herokuapp.com/https://opendata-download-metfcst.smhi.se/api/category/pmp3g/version/2/geotype/point/lon/${lon}/lat/${lat}/data.json`;
-
-    try {
-        const [owmResponse, smhiResponse] = await Promise.all([
-            fetch(openWeatherUrl),
-            fetch(smhiUrl)
-        ]);
-
-        const owmData = await owmResponse.json();
-        const smhiData = await smhiResponse.json();
-
-        // Hämta temperatur från OpenWeatherMap
-        const tempOWM = owmData.main.temp;
-        const windOWM = owmData.wind.speed;
-
-        // Hämta temperatur från SMHI (närmsta tidpunkt)
-        const tempSMHI = smhiData.timeSeries[0].parameters.find(p => p.name === "t").values[0];
-        const windSMHI = smhiData.timeSeries[0].parameters.find(p => p.name === "ws").values[0];
-
-        // Visa data i popup
-        L.popup()
-            .setLatLng(e.latlng)
-            .setContent(`
-                <b>Väderdata för denna plats</b><br>
-                🌡️ OpenWeatherMap: ${tempOWM}°C<br>
-                💨 OpenWeatherMap Vind: ${windOWM} m/s<br>
-                🌡️ SMHI: ${tempSMHI}°C<br>
-                💨 SMHI Vind: ${windSMHI} m/s
-            `)
-            .openOn(map);
-    } catch (error) {
-        console.error("Fel vid hämtning av väderdata:", error);
-    }
-});
-
-*/
