@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="sv">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link rel="icon" href="favicon.ico" type="image/x-icon">
+
+    <!-- PNG-filer för moderna webbläsare -->
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+
+    <!-- Apple Touch Icons -->
+
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+
+    <!-- Android and PWA -->
+    <link rel="icon" sizes="512x512" href="android-chrome-512x512.png">
+    <link rel="icon" sizes="192x192" href="android-chrome-192x192.png">
+
+    <title>HimlaKul</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="css/main.scss">
+    <script type="module" src="js/main.js" defer></script>
+    <!--<script type="module" src="js/mobilemeny.js"></script> -->
+    <script type="module" src="js/themeswitcher.js"></script>
+</head>
+
+<body>
+    <header>
+        <button id="theme-toggle">Byt tema</button>
+        <h1>HimlaKul</h1>
+        <h2>En app för att upptäcka världen i alla väder</h2>
+
+        
+    </header>
+
+    <main>
+        <section id="info">
+            <h2>Upptäck i alla väder</h2>
+            <div id="search-container">
+                <fieldset title="Max 10 resultat visas med en radie på 10 km från aktuell plats!">
+                    <legend class="smalltext">Välj vad du vill se på kartan...</legend>
+                    <div>
+                        <input type="checkbox" name="tourism.attraction" id="tourism.attraction">
+                        <label for="tourism.attraction" class="smalltext">Sevärdheter</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="entertainment" id="entertainment">
+                        <label for="entertainment" class="smalltext">Underhållning</label>
+                    </div>
+                    <div>
+                        <input type="checkbox" name="catering.restaurant" id="catering.restaurant">
+                        <label for="catering.restaurant" class="smalltext">Restaurang</label>
+                    </div>
+                </fieldset>
+                <input type="text" id="search-box" placeholder="Ange stad/ort">
+                <button id="placeToSearch">Sök</button>
+                <button id="myLocation" title="Upptäck nära mig!">Nära mig!</button>
+            </div>
+            <div id="map" ></div>
+        </section>
+
+    </main>
+</body>
+
+</html>

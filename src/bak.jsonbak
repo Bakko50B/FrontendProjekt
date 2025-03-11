@@ -1,0 +1,24 @@
+{
+    "name": "uppgift_1",
+    "version": "1.0.0",
+    "source": "src/index.html",
+    "scripts": {
+      "clean": "npx rimraf dist",
+      "build": "npm run clean && parcel build src/index.html",
+      "start": "npm run clean && parcel serve src/index.html --no-hmr"
+    },
+    "author": "Torbjörn Lundberg",
+    "license": "ISC",
+    "description": "",
+    "devDependencies": {
+      "@parcel/transformer-sass": "^2.13.3",
+      "parcel": "^2.13.3",
+      "rimraf": "^6.0.1",
+      "sharp": "^0.33.5"
+    },
+    "browserslist": "> 1%, last 2 versions, not dead",
+    "dependencies": {
+      "glob": "^11.0.1"
+    }
+  }
+  
