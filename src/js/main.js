@@ -313,8 +313,110 @@ map.on('click', function (e) {
         })
         .openPopup();
 
+    fetchWeather(lat, lon);
 
     // Visa väder och sevärdheter för den klickade platsen
     showInfo(lat, lon);
 });
+
+// Variabel för att spara senaste hämtade väderdata
+let lastFetchedWeather = null;
+
+// Hantera klick på kartan (hämta väderdata men visa inte direkt)
+// map.on('click', function (e) {
+//     const lat = e.latlng.lat; // Hämta latitud
+//     const lon = e.latlng.lng; // Hämta longitud
+
+//     fetchWeather(lat, lon); // Hämta väderdata
+// });
+
+// Knapp för att visa popupen
+document.getElementById('toggleForecast').addEventListener('click', () => {
+    const popup = document.getElementById('weatherPopup');
+
+    if (!lastFetchedWeather) {
+        alert('Ingen väderdata finns ännu. Klicka på en plats på kartan först!');
+        return; // Avbryt om ingen data har hämtats
+    }
+
+    // Visa eller dölj popupen
+    if (popup.style.display === 'block') {
+        popup.style.display = 'none';
+        document.getElementById('toggleForecast').textContent = 'Hämta prognos';
+    } else {
+        showPopup(lastFetchedWeather);
+    }
+});
+
+// Stäng popupen
+document.getElementById('closePopup').addEventListener('click', () => {
+    document.getElementById('weatherPopup').style.display = 'none';
+    document.getElementById('toggleForecast').textContent = 'Hämta prognos';
+});
+
+// Funktion för att hämta väderdata utan att visa popup direkt
+async function fetchWeather(lat, lon) {
+    const apiUrl = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
+
+    try {
+        const response = await fetch(apiUrl, {
+            headers: {
+                'User-Agent': 'MinApp/1.0 (minemail@example.com)'
+            }
+        });
+        if (!response.ok) {
+            throw new Error(`HTTP-fel! Status: ${response.status}`);
+        }
+        const data = await response.json();
+
+        // Generera innehåll för popupen
+        const forecastContent = generateForecastContent(data.properties.timeseries);
+        lastFetchedWeather = forecastContent; // Spara väderdatan för senare visning
+        alert('Väderdata har hämtats! Klicka på "Hämta prognos" för att visa det.'); // Informera användaren
+    } catch (error) {
+        console.error('Något gick fel:', error);
+    }
+}
+
+// Funktion för att visa popup
+function showPopup(content) {
+    const popup = document.getElementById('weatherPopup');
+    const popupContent = document.getElementById('popupContent');
+    popupContent.innerHTML = content;
+    popup.style.display = 'block';
+    document.getElementById('toggleForecast').textContent = 'Dölj prognos'; // Ändra knappens text
+}
+
+// Generera HTML-innehåll för väderprognosen
+function generateForecastContent(timeseries) {
+    let content = '';
+
+    timeseries.slice(0, 5).forEach(entry => {
+        const time = new Date(entry.time);
+        const details = entry.data.instant.details;
+
+        let symbol = '<span class="symbol">☀️</span>'; // Sol som standard
+        if (details.precipitation_rate > 0) {
+            symbol = details.air_temperature < 0
+                ? '<span class="symbol">❄️</span>' // Snöflinga
+                : `<div class="rain">
+                       <span class="raindrop">💧</span>
+                       <span class="raindrop">💧</span>
+                       <span class="raindrop">💧</span>
+                   </div>`; // Regndroppar
+        } else if (details.cloud_area_fraction > 50) {
+            symbol = '<span class="symbol">☁️</span>'; // Molnigt
+        }
+
+        content += `
+            <div>
+                <strong>${time.toLocaleTimeString()}</strong>: ${symbol}
+                Temp: ${details.air_temperature}°C, Vind: ${details.wind_speed} m/s
+            </div>
+        `;
+    });
+
+    return content;
+}
+
 

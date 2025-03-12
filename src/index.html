@@ -38,6 +38,17 @@
     </header>
 
     <main>
+        <div id="weatherPopup" style="display: none; width:80%; position: absolute; top: 10%; left: 10%; z-index: 1000; background-color: white; border: 1px solid #ccc; padding: 10px; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+            <button id="closePopup" style="float: right;">✖</button>
+            <div id="popupContent">
+                <!-- Väderdata visas här -->
+            </div>
+        </div>
+        
+        <button id="toggleForecast">Hämta prognos</button>
+        
+        
+        
         <section id="info">
             <h2>Upptäck i alla väder</h2>
             <div id="search-container">

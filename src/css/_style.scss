@@ -278,6 +278,61 @@ fieldset input[type="checkbox"] {
     margin-right: 8px; 
 }
 
+.symbol {
+    display: inline-block;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.2); /* Gör symbolen större till 120% av dess ursprungliga storlek */
+    }
+}
+
+.spin {
+    display: inline-block;
+    animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.rain {
+    display: inline-block;
+    position: relative;
+    overflow: hidden;
+}
+
+.raindrop {
+    position: absolute;
+    top: 0;
+    animation: fall 1s linear infinite;
+}
+
+@keyframes fall {
+    0% {
+        top: -20px; /* Startar utanför synfältet */
+        opacity: 0;
+    }
+    50% {
+        opacity: 1;
+    }
+    100% {
+        top: 100px; /* Faller ner utanför synfältet */
+        opacity: 0;
+    }
+}
+
+
 /* Vid små skärmar */
 @media (max-width: 768px) {
     fieldset {
