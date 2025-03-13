@@ -18,26 +18,14 @@ MySearchEl.addEventListener("keydown", function (event) {
 
 
 const myPlaceToSearchButtonEl = document.getElementById("placeToSearch");
+//tomt även om det finns mellanslag i den
 myPlaceToSearchButtonEl.disabled = MySearchEl.value.trim() === "";
 myPlaceToSearchButtonEl.addEventListener('click', searchLocation);
 
+// lyssnar om det finns innehåll i sökrutan. Om det inte finns innehåll i sökrutan är knappen disabled
 MySearchEl.addEventListener("input", function () {
     myPlaceToSearchButtonEl.disabled = !MySearchEl.value.trim();
-
 });
-/**
-let myMap = document.getElementById("map");
-
-const map = L.map('map').setView([59.3293, 18.0686], 4); // Sverige
-
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© OpenStreetMap contributors' 
-}).addTo(map);
-*/
-
-/** Jag fick aldrig till rättigheterna på mitt weather api konto
- * Lagerhanteringen fungerar men det visas typ inget väder bara en del tomma bilder 
- */
 
 // Skapa Leaflet-kartan och sätt standardvy
 const map = L.map('map').setView([59.3293, 18.0686], 4); // Sverige
@@ -47,7 +35,7 @@ const baseLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.pn
     attribution: '© OpenStreetMap contributors'
 });
 
-// Väderlager
+// Väderlager (4st olika)
 const windLayer = L.tileLayer(`https://tile.openweathermap.org/map/wind_new/{z}/{x}/{y}.png?appid=${weatherApiKey}`, {
     attribution: '&copy; <a href="https://openweathermap.org/">OpenWeatherMap</a>'
 });
@@ -70,18 +58,32 @@ map.addLayer(baseLayer); // Viktigt: Baslager läggs till här
 // Skapa lagerkontroll för att växla mellan lager
 L.control.layers(
     { "Standardkarta": baseLayer },  // Baslager (bara ett aktivt åt gången)
-    { 
-        "Vind": windLayer, 
+    {
+        "Vind": windLayer,
         "Temperatur": tempLayer,
         "Nederbörd": rainLayer,
-        "Molntäcke": cloudsLayer 
+        "Molntäcke": cloudsLayer
     }  // Överlagringslager (flera kan vara aktiva samtidigt)
 ).addTo(map);
 
 let userMarkerLayer = L.layerGroup().addTo(map);    // Lager för användarens markör
 let attractionsLayer = L.layerGroup().addTo(map);   // Lager för sevärdhetsmarkörer
 
-// Funktion för att hämta väderdata
+/**
+ * Hämtar väderdata för en given position
+ *
+ * @async
+ * @function getWeather
+ * @param {number} lat - Latitude of the location.
+ * @param {number} lon - Longitude of the location.
+ * @returns {Promise<string>} A string containing the weather description, temperature, and an icon image HTML, or an error message if the request fails.
+ * 
+ * @throws {Error} If the API response is not OK (e.g., network issue or bad status code).
+ *
+ * @example
+ * const weatherHtml = await getWeather(59.3293, 18.0686); // Stockholm, Sweden
+ * console.log(weatherHtml);
+ */
 async function getWeather(lat, lon) {
     const url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&lang=sv&appid=${weatherApiKey}`;
     try {
@@ -98,7 +100,21 @@ async function getWeather(lat, lon) {
     }
 }
 
-// Funktion för att hämta sevärdheter
+/**
+ * Hämtar platser i "närheten" baserat på kategori och plats- Visar innehållet på kartan
+ *
+ * @async
+ * @function getNearbyPlaces
+ * @param {number} lat - Latitude of the user's location.
+ * @param {number} lon - Longitude of the user's location.
+ * @returns {Promise<string>} A string containing an HTML list of places with links, or an error message if no results are found or the request fails.
+ *
+ * @throws {Error} If an issue occurs during the API call or fetching data.
+ *
+ * @example
+ * const nearbyPlacesHtml = await getNearbyPlaces(59.3293, 18.0686); // Latitude and longitude for Stockholm
+ * console.log(nearbyPlacesHtml); // Logs HTML list of nearby places
+ */
 async function getNearbyPlaces(lat, lon) {
     // Dynamiskt hämta valda kategorier från checkboxarna
     const checkboxes = document.querySelectorAll("#search-container input[type='checkbox']:checked");
@@ -112,7 +128,7 @@ async function getNearbyPlaces(lat, lon) {
     console.log(categoriesString);
 
     const radius = 10000; // 10 km radie
-    const url = `https://api.geoapify.com/v2/places?categories=${categoriesString}&filter=circle:${lon},${lat},${radius}&bias=proximity:${lon},${lat}&lang=sv&limit=10&apiKey=${placesApiKey}`;
+    const url = `https://api.geoapify.com/v2/places?categories=${categoriesString}&filter=circle:${lon},${lat},${radius}&bias=proximity:${lon},${lat}&lang=sv&limit=20&apiKey=${placesApiKey}`;
     //console.log(url); 
 
     try {
@@ -122,7 +138,7 @@ async function getNearbyPlaces(lat, lon) {
         if (data.features.length === 0) return "Inget resultat på din plats!";
 
         let placesInfo = "<b>Resulatet:</b><ul>";
-        
+
         data.features.forEach(place => {
             if (place.properties.name) {
                 let name = place.properties.name;
@@ -136,8 +152,8 @@ async function getNearbyPlaces(lat, lon) {
                     .addTo(attractionsLayer)
                     .bindPopup(`<b>${name}</b>`, {
                         autoPan: true, // Flytta kartan om popup hamnar utanför vyn
-                        autoPanPadding: [20, 20], // Marginal runt popupen
-                        maxWidth: 300 // Begränsa bredden på popupen
+                        autoPanPadding: [2, 2], 
+                        keepInView: true
                     })
                     .openPopup();
 
@@ -152,8 +168,32 @@ async function getNearbyPlaces(lat, lon) {
     }
 }
 
-// Kombinerad funktion för att visa både väder och sevärdheter
+/**
+ * Funktion för att visa både väder och platser på en karta.
+ *
+ * @async
+ * @function showInfo
+ * @param {number} lat - Latitude of the location.
+ * @param {number} lon - Longitude of the location.
+ * @returns {Promise<void>} No return value, but updates the map and DOM.
+ *
+ * @description
+ * Hämtar väderdata och platser i närheten baserat på latitude och longitude.
+ * Visar informationen i en Leaflet popup.
+ *
+ * @example
+ * await showInfo(59.3293, 18.0686); // Display info for Stockholm, Sweden
+ */
 async function showInfo(lat, lon) {
+
+    fetchWeather(lat, lon);
+    const popup = document.getElementById('weatherPopup');
+    const toggleButton = document.getElementById('toggleForecast'); // Hämta knappen
+
+    if (popup.style.display === 'block') {
+        popup.style.display = 'none'; // Stäng popupen
+        toggleButton.textContent = 'Visa prognos'; // Uppdatera knappens text
+    }
 
     // Hämta väderdata och sevärdheter
     const weatherInfo = await getWeather(lat, lon);
@@ -167,20 +207,43 @@ async function showInfo(lat, lon) {
 
     // Skapa och öppna popup på kartan
     L.popup({
-        offset: [0, -20] // Flytta popupen uppåt
+        autoPan: true, // Gör att kartan automatiskt panorerar för att visa popupen
+        autoPanPadding: [2, 20], // Marginal från kartkanten (20 pixlar horisontellt och vertikalt)
+        keepInView: true, // Se till att popupen alltid håller sig inom kartans vy
+        offset: [0, -20 ] 
     })
         .setLatLng([lat, lon])
         .setContent(popupContent)
         .openOn(map);
 }
 
-
+/**
+ * Hämtar webbläsarens nuvarande position
+ *
+ * @function getCurrentLocation
+ * @returns {Promise<GeolocationPosition>} A Promise that resolves with the user's current position, or rejects with an error if location access fails.
+ */
 function getCurrentLocation() {
     return new Promise((resolve, reject) => {
         navigator.geolocation.getCurrentPosition(resolve, reject);
     });
 }
 
+/**
+ * Sätter användarens nuvarande position på kartan med väder och intressepunkter i en popup
+ *
+ * @async
+ * @function findMyLocation
+ * @returns {Promise<void>} Uppdaterar kartan och DOM
+ *
+ * @description
+ * Använder Geolocation för positionering.
+ * Hanterar fel om det behövs 
+ * @throws {Error} Throws an error if geolocation fails or an API request encounters a problem.
+ *
+ * @example
+ * await findMyLocation(); // Fetch and display the user's current location on the map
+ */
 async function findMyLocation() {
     if (!navigator.geolocation) {
         alert("Din webbläsare stöder inte platstjänster.");
@@ -199,15 +262,14 @@ async function findMyLocation() {
             .addTo(userMarkerLayer)
             .bindPopup("<b>Du är här!</b>", {
                 autoPan: true,
-                autoPanPadding: [20, 20],
+                autoPanPadding: [20, 50 ],
                 maxWidth: 300
             })
             .openPopup();
 
-        // Använd `flyTo` för smidig animering
+        // Använder `flyTo` för smidig animering 
         map.flyTo([lat, lon], 11, { duration: 2 });
 
-        // Visa väder och sevärdheter
         await showInfo(lat, lon);
     } catch (error) {
         console.error("Ett fel uppstod när platsen hämtades:", error);
@@ -216,11 +278,24 @@ async function findMyLocation() {
 }
 
 
-
-
-
-
-// Hämta väder och sevärdheter via sökfältet
+/**
+ * Söker efter en plats baserat på användarens sökfråga och uppdaterar kartan med resultatet.
+ *
+ * @async
+ * @function searchLocation
+ * @returns {Promise<void>} Returnerar inget värde, men uppdaterar kartan och visar sökresultatet.
+ *
+ * @description
+ * Funktionen hämtar användarens sökfråga. 
+ * Den skickar en förfrågan för att hitta matchande platser och uppdaterar kartan.
+ * Om ingen plats hittas eller ett fel uppstår får användaren en varning.
+ *
+ * @throws {Error} Kastar ett fel om API-anropet misslyckas eller om svarskoden inte är OK.
+ *
+ * @example
+ * // Utför en sökning när användaren anger "Stockholm" i inmatningsfältet
+ * await searchLocation();
+ */
 async function searchLocation() {
     try {
         let query = document.getElementById('search-box').value.trim();
@@ -254,9 +329,26 @@ async function searchLocation() {
     }
 }
 
-
-
-// Uppdaterad travelToLocation som inkluderar showInfo
+/**
+ * Reser till en given plats genom att animera kartan och uppdatera den med en markör.
+ *
+ * @async
+ * @function travelToLocation
+ * @param {number} lat - Latituden för destinationen.
+ * @param {number} lon - Longituden för destinationen.
+ * @returns {Promise<void>} Returnerar inget värde, men uppdaterar kartan och visar information.
+ *
+ * @description
+ * Funktionen animerar kartan genom att först zooma ut, sedan "flyga" till den angivna platsen och 
+ * zooma in på destinationen. Tidigare markörer rensas, och en ny markör placeras vid destinationen 
+ * med en popup. Funktionalitet för att visa väder och sevärdheter på destinationen anropas också.
+ *
+ * @throws {Error} Kastar ett fel om kartresan misslyckas eller om något annat fel uppstår.
+ *
+ * @example
+ * // Res till Stockholm (latitud 59.3293, longitud 18.0686)
+ * await travelToLocation(59.3293, 18.0686);
+ */
 async function travelToLocation(lat, lon) {
     try {
         map.closePopup(); // Stäng popup innan resan startar
@@ -275,9 +367,6 @@ async function travelToLocation(lat, lon) {
                 maxWidth: 300
             })
             .openPopup();
-
-
-        // Säkerställ att väder och sevärdheter visas
         await showInfo(lat, lon);
     } catch (error) {
         console.error("Ett fel uppstod under resan:", error);
@@ -285,10 +374,27 @@ async function travelToLocation(lat, lon) {
     }
 }
 
-
-
-// Visa väder och sevärdheter vid kartklick
+/**
+ * Hanterar klickhändelser på kartan genom att flytta kartan, placera en markör och visa information.
+ *
+ * @function
+ * @param {Object} e - Klickhändelse som innehåller information om den klickade platsen, inklusive latitud och longitud.
+ *
+ * @description
+ * När användaren klickar på kartan:
+ * - Hämtar latitud och longitud från händelsen.
+ * - Flyttar och animerar kartan till den klickade platsen.
+ * - Rensar tidigare användarmarkörer och lägger till en ny markör vid den klickade platsen.
+ * - Visar en popup som säger "Du klickade här!" på den nya markören.
+ * - Anropar `showInfo`-funktionen för att visa väderdata och sevärdheter för den klickade platsen.
+ *
+ * @example
+ * map.on('click', function (e) {
+ *     // Hanterar klickhändelser
+ * });
+ */
 map.on('click', function (e) {
+
     const lat = e.latlng.lat; // Hämta latitud från klickhändelsen
     const lon = e.latlng.lng; // Hämta longitud från klickhändelsen
 
@@ -313,8 +419,6 @@ map.on('click', function (e) {
         })
         .openPopup();
 
-    fetchWeather(lat, lon);
-
     // Visa väder och sevärdheter för den klickade platsen
     showInfo(lat, lon);
 });
@@ -322,39 +426,55 @@ map.on('click', function (e) {
 // Variabel för att spara senaste hämtade väderdata
 let lastFetchedWeather = null;
 
-// Hantera klick på kartan (hämta väderdata men visa inte direkt)
-// map.on('click', function (e) {
-//     const lat = e.latlng.lat; // Hämta latitud
-//     const lon = e.latlng.lng; // Hämta longitud
 
-//     fetchWeather(lat, lon); // Hämta väderdata
-// });
-
-// Knapp för att visa popupen
+/**
+ * Hanterar klickhändelsen på knappen för att visa eller dölja väderpopupen.
+ *
+ */
 document.getElementById('toggleForecast').addEventListener('click', () => {
     const popup = document.getElementById('weatherPopup');
 
     if (!lastFetchedWeather) {
-        alert('Ingen väderdata finns ännu. Klicka på en plats på kartan först!');
-        return; // Avbryt om ingen data har hämtats
+        alert('Ingen väderdata finns ännu. Visa plats först!');
+        return; 
     }
 
-    // Visa eller dölj popupen
     if (popup.style.display === 'block') {
         popup.style.display = 'none';
-        document.getElementById('toggleForecast').textContent = 'Hämta prognos';
+        document.getElementById('toggleForecast').textContent = 'Visa väder';
     } else {
         showPopup(lastFetchedWeather);
     }
 });
 
-// Stäng popupen
+/**
+ * Hanterar klickhändelsen på knappen för att stänga väderpopupen.
+ *
+ */
 document.getElementById('closePopup').addEventListener('click', () => {
     document.getElementById('weatherPopup').style.display = 'none';
-    document.getElementById('toggleForecast').textContent = 'Hämta prognos';
+    document.getElementById('toggleForecast').textContent = 'Visa väder';
 });
 
-// Funktion för att hämta väderdata utan att visa popup direkt
+/**
+ * Hämtar väderprognosdata från MET.no baserat på angiven latitud och longitud.
+ *
+ * @async
+ * @function fetchWeather
+ * @param {number} lat - Latitud för platsen.
+ * @param {number} lon - Longitud för platsen.
+ * @returns {Promise<void>} Returnerar inget, men sparar den hämtade väderprognosen i `lastFetchedWeather`.
+ *
+ * @description
+ * Funktionen hämtar väderdata från MET.no:s LocationForecast API. 
+ * Vid framgång genereras popup-innehåll baserat på tidsseriedata.
+ * Om ett fel uppstår loggas det till konsolen.
+ *
+ * @throws {Error} Kastar ett fel om HTTP-förfrågan misslyckas eller om API-svaret inte är OK.
+ *
+ * @example
+ * await fetchWeather(59.3293, 18.0686); // Hämta väderdata för Stockholm
+ */
 async function fetchWeather(lat, lon) {
     const apiUrl = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
 
@@ -372,13 +492,22 @@ async function fetchWeather(lat, lon) {
         // Generera innehåll för popupen
         const forecastContent = generateForecastContent(data.properties.timeseries);
         lastFetchedWeather = forecastContent; // Spara väderdatan för senare visning
-        alert('Väderdata har hämtats! Klicka på "Hämta prognos" för att visa det.'); // Informera användaren
+
     } catch (error) {
         console.error('Något gick fel:', error);
     }
 }
 
-// Funktion för att visa popup
+/**
+ * Visar popup-fönstret med väderinformation och uppdaterar dess innehåll.
+ *
+ * @function showPopup
+ * @param {string} content - HTML-innehållet som ska visas i popupen.
+ *
+ * @description
+ * Funktionen uppdaterar popupen för väderinformation och visar den för användaren.
+ * 
+ */
 function showPopup(content) {
     const popup = document.getElementById('weatherPopup');
     const popupContent = document.getElementById('popupContent');
@@ -387,36 +516,75 @@ function showPopup(content) {
     document.getElementById('toggleForecast').textContent = 'Dölj prognos'; // Ändra knappens text
 }
 
-// Generera HTML-innehåll för väderprognosen
+/**
+ * Object för att hantera symboler efter symbolkod
+ * Varje vädersymbolkoder ger en "emoji" 
+ */
+const symbolCodeMap = {
+    "clearsky_day": "☀️",
+    "clearsky_night": "🌙",
+    "cloudy": "☁️",
+    "fair_day": "🌤️",
+    "fair_night": "🌛",
+    "fog": "🌫️",
+    "partlycloudy_day": "⛅",
+    "partlycloudy_night": "🌛☁️",
+    "rain": "🌧️",
+    "lightrain": "🌦️",
+    "lightrainshowers_day": "☔",
+    "heavyrain": "🌧️🌧️",
+    "heavyrainshowers_day": "🌧️🌧️",
+    "rainshowers_day": "🌦️",
+    "heavyrainshowers_night": "🌧️🌙",
+    "lightrainshowers_night": "🌜💧",
+    "snow": "❄️",
+    "lightsnow": "🌨️",
+    "lightsnowshowers_day": "🌨️",
+    "heavysnow": "❄️❄️",
+    "thunderstorm": "⛈️ ",
+    "lightsleet": "🌨️💧",
+    "sleet": "🌨️💧"
+};
+
+
+/**
+ * Genererar HTML-innehåll för en 12-timmars väderprognos baserat på en tidsserie.
+ *
+ * @function generateForecastContent
+ * @param {Array} timeseries - En array med väderdata där varje objekt innehåller detaljer om vädret per timme.
+ * @returns {string} En HTML-sträng som representerar väderprognosens innehåll.
+ *
+ * @description
+ * Funktionen tar en tidsserie med väderdata, loopar igenom de första 12 timmarna och genererar en HTML-struktur
+ * För varje timme inkluderas:
+ * - En tidsbeskrivning ("Nu" för den första timmen, "+ Xh" för efterföljande timmar).
+ * - En emoji för väderförhållandet hämtad från `symbolCodeMap`.
+ * - Temperaturen och vindhastigheten för timmen.
+ * Om en vädersymbol saknas i `symbolCodeMap` används en standardikon (❓).
+ * 
+ */
 function generateForecastContent(timeseries) {
-    let content = '';
 
-    timeseries.slice(0, 5).forEach(entry => {
-        const time = new Date(entry.time);
-        const details = entry.data.instant.details;
+    let content = '<h2>12h prognos</h2> ';
+    let hourCounter = 0; // Räknare för timmar
 
-        let symbol = '<span class="symbol">☀️</span>'; // Sol som standard
-        if (details.precipitation_rate > 0) {
-            symbol = details.air_temperature < 0
-                ? '<span class="symbol">❄️</span>' // Snöflinga
-                : `<div class="rain">
-                       <span class="raindrop">💧</span>
-                       <span class="raindrop">💧</span>
-                       <span class="raindrop">💧</span>
-                   </div>`; // Regndroppar
-        } else if (details.cloud_area_fraction > 50) {
-            symbol = '<span class="symbol">☁️</span>'; // Molnigt
-        }
+    timeseries.slice(0, 12).forEach(entry => {
+        const symbolCode = entry.data.next_1_hours?.summary.symbol_code || "unknown"; // Hämta symbol_code
+        const symbol = symbolCodeMap[symbolCode] || "❓"; // Hämta ikon från map, standardvärde om koden saknas
+
+        //console.log(symbolCode); // Jobbat med att hitta alla olika symbolkoder
+        let timeLabel = hourCounter === 0 ? "Nu: &nbsp;&nbsp;" : `+ ${hourCounter}h:`;
 
         content += `
-            <div>
-                <strong>${time.toLocaleTimeString()}</strong>: ${symbol}
-                Temp: ${details.air_temperature}°C, Vind: ${details.wind_speed} m/s
+            <div class="weatherrow">
+                <p><span class="weather">${timeLabel}</span> 
+                <span class="symbol">${symbol}</span> 
+                <span class="temp">Temp: ${entry.data.instant.details.air_temperature}°C </span>
+                Vind: ${entry.data.instant.details.wind_speed} m/s</p>
             </div>
         `;
+        hourCounter++; 
     });
 
     return content;
 }
-
-

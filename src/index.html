@@ -38,22 +38,17 @@
     </header>
 
     <main>
-        <div id="weatherPopup" style="display: none; width:80%; position: absolute; top: 10%; left: 10%; z-index: 1000; background-color: white; border: 1px solid #ccc; padding: 10px; border-radius: 8px; box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
-            <button id="closePopup" style="float: right;">✖</button>
+        <div id="weatherPopup" >
+            <button id="closePopup" >✖</button>
             <div id="popupContent">
                 <!-- Väderdata visas här -->
             </div>
-        </div>
-        
-        <button id="toggleForecast">Hämta prognos</button>
-        
-        
-        
+        </div>        
         <section id="info">
             <h2>Upptäck i alla väder</h2>
             <div id="search-container">
                 <fieldset title="Max 10 resultat visas med en radie på 10 km från aktuell plats!">
-                    <legend class="smalltext">Välj vad du vill se på kartan...</legend>
+                    <legend class="smalltext">Välj vad du vill se på kartan! &nbsp;</legend>
                     <div>
                         <input type="checkbox" name="tourism.attraction" id="tourism.attraction">
                         <label for="tourism.attraction" class="smalltext">Sevärdheter</label>
@@ -70,6 +65,7 @@
                 <input type="text" id="search-box" placeholder="Ange stad/ort">
                 <button id="placeToSearch">Sök</button>
                 <button id="myLocation" title="Upptäck nära mig!">Nära mig!</button>
+                <button id="toggleForecast" title="För att se mer en olika sevärdheter och event kan du även se vädret för stunden och 12 timmar framåt!">Visa väder</button>
             </div>
             <div id="map" ></div>
         </section>
