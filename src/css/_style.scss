@@ -106,7 +106,7 @@ header {
 
 main {
     flex: 1;
-    width: clamp(500px, 90%, 1400px);
+    width: clamp(300px, 100%, 1800px);
     // max-width: 1140px;
     margin: 0 auto;
     //För temahantering
@@ -168,10 +168,10 @@ p {
 }
 
 //Förökt till att överta stylingen från leaflet.css
-.leaflet-popup {
-    overflow: visible !important;
-    z-index: 10000;    
-}
+// .leaflet-popup {
+//     overflow: visible !important;
+//     z-index: 10000;    
+// }
 
 fieldset {
     padding-left: .5rem;
@@ -200,7 +200,7 @@ fieldset {
     background-color: #ffffff;
     color: black;
     display: none;
-    width: 80%; 
+    width: fit-content; 
     position: absolute;
     top: 20%; 
     left: 50%; 
@@ -213,6 +213,10 @@ fieldset {
 
     #closePopup {
         float: right;
+    }
+
+    p{
+        font-size: 1.1rem;
     }
 }
 //En rad med väder på popupen
@@ -229,7 +233,7 @@ fieldset {
 
     .temp {
         display: inline-block;
-        width: 9rem;
+        width: 8rem;
         text-align: left;
     }
 
@@ -240,6 +244,7 @@ fieldset {
         animation: pulse 1.5s infinite;
     }
 }
+
 
 // Animering på vädersymbolerna
 @keyframes pulse {
@@ -274,6 +279,12 @@ fieldset {
     }
 }
 
+.leaflet-popup-content {
+    width: fit-content;
+    max-height: 400px; /* Begränsar höjden */
+    overflow-y: auto; /* Gör att innehållet kan skrollas */
+}
+
 /* Här följer olika skärmstorlekar */
 
 @media screen and (max-width: 1100px) {
@@ -293,7 +304,19 @@ fieldset {
     header li a {
         font-size: 1.5rem;
     }
+
+    #weatherPopup {
+        width: 80%  
+    }
+    .weatherrow {
+        p {
+            font-size: .8rem;
+        }  
+    }
 }
+
+
+
 
 
 @media screen and (max-width: 900px) {
@@ -316,29 +339,35 @@ fieldset {
     }
 
     #weatherPopup {
-        width: 95%;
-        top: 10%;   
-
+        width:90%;
+        top: 10%;  
+        p{
+            font-size: .8rem;
+        } 
     }
 
     .weatherrow {
 
         p {
-            font-size: .8rem;
+            font-size: .75rem;
         }
 
         .weather {
-            width: 3rem;
+            width: 4rem;
         }
 
         .temp {
-            width: 6rem;
+            width: 8rem;
         }
 
         .symbol {
-            width: 2rem;
+            width: 4rem;
         }
     }
+}
+
+.leaflet-popup-content {
+    max-height: 300px; /* Begränsar höjden */
 }
 
 @media screen and (max-width: 700px) {
@@ -349,6 +378,11 @@ fieldset {
         padding: 2px 4px;
         hover {
             background-color: var(--text-color);
+        }
+    }
+    #weatherPopup {
+        p {
+            font-size: .65rem;
         }
     }
 }
@@ -407,15 +441,15 @@ fieldset {
     .weatherrow {
 
         p {
-            font-size: .75rem;
+            font-size: .6rem;
         }
 
         .weather {
-            width: 2.2rem;
+            width: 2.8rem;
         }
 
         .temp {
-            width: 5rem;
+            width: 6rem;
         }
 
         .symbol {
@@ -432,6 +466,71 @@ fieldset {
     }
 
     .leaflet-popup-content {
-        max-width: 250px; /* Begränsar bredden */
+        max-height: 250px;
+        max-width: 350px; /* Begränsar bredden */
+    }
+}
+
+
+
+@media screen and (max-width: 450px){
+
+    #weatherpop{
+
+        width: 100%;
+        p{
+            font-size: .5rem;
+        }
+    }
+
+    .weatherrow {
+
+        .weather {
+            width: 2.2rem;
+        }
+
+        .temp {
+            width: 5rem;
+        }
+
+        .symbol {
+            width: 2rem;
+            // font-size: .7rem;
+        }
+
+    }
+    
+}
+
+@media screen and (max-width: 350px){
+
+    #weatherPopup{
+
+        width: 100%;
+        p{
+            font-size: .65rem;
+        }
+    }
+
+    .weatherrow {
+
+        .weather {
+            width: 2.1rem;
+        }
+
+        .temp {
+            width: 4.5rem;
+        }
+
+        .symbol {
+            width: 1.9rem;
+            // font-size: .7rem;
+        }
+
+    }
+
+    .leaflet-popup-content {
+        max-height: 220px;
+        max-width: 230px; /* Begränsar bredden */
     }
 }
