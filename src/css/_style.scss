@@ -70,6 +70,8 @@ header {
         text-align: center;
         margin: 0;
         font-size: 3rem;
+        text-shadow: 12px 8px 5px rgba(0, 0, 0, 0.25);
+        animation: h1change 6s linear, shadow-animation 6s 5 linear;
     }
 
     h2 {
@@ -102,6 +104,26 @@ header {
     &:hover {
         background-color: $hover-color;
     }
+}
+
+#placeToSearch,
+#myLocation,
+#toggleForecast {
+    @extend .button;
+    background-color: var(--text-color);
+    color: var(--bg-color);
+    transition: background-color .5s linear;
+
+    &:hover {
+        background-color: $hover-color;
+    }
+}
+
+#placeToSearch:disabled {
+    background-color: #cccccc;
+    color: #666666;
+    cursor: not-allowed;
+    opacity: 0.6;   
 }
 
 main {
@@ -175,20 +197,24 @@ p {
 
 fieldset {
     padding-left: .5rem;
+
     legend {
         padding-left: .5rem;
     }
+
     display: flex;
     flex-direction: column;
     gap: 2px;
     margin-bottom: .2rem;
+
     label {
         display: inline;
     }
+
     input[type="checkbox"] {
         margin-right: 8px;
     }
-    
+
 }
 
 #search-box {
@@ -200,11 +226,11 @@ fieldset {
     background-color: #ffffff;
     color: black;
     display: none;
-    width: fit-content; 
+    width: fit-content;
     position: absolute;
-    top: 20%; 
-    left: 50%; 
-    transform: translateX(-50%); 
+    top: 20%;
+    left: 50%;
+    transform: translateX(-50%);
     z-index: 1000;
     border: 1px solid #ccc;
     padding: 10px;
@@ -215,10 +241,11 @@ fieldset {
         float: right;
     }
 
-    p{
+    p {
         font-size: 1.1rem;
     }
 }
+
 //En rad med väder på popupen
 .weatherrow {
     p {
@@ -281,8 +308,10 @@ fieldset {
 
 .leaflet-popup-content {
     width: fit-content;
-    max-height: 400px; /* Begränsar höjden */
-    overflow-y: auto; /* Gör att innehållet kan skrollas */
+    max-height: 400px;
+    /* Begränsar höjden */
+    overflow-y: auto;
+    /* Gör att innehållet kan skrollas */
 }
 
 /* Här följer olika skärmstorlekar */
@@ -291,6 +320,7 @@ fieldset {
     #info {
         width: 92%;
     }
+
     header {
         h1 {
             font-size: 2.5rem;
@@ -306,12 +336,14 @@ fieldset {
     }
 
     #weatherPopup {
-        width: 80%  
+        width: 80%
     }
+
     .weatherrow {
         p {
             font-size: .8rem;
-        }  
+        }
+
     }
 }
 
@@ -339,11 +371,12 @@ fieldset {
     }
 
     #weatherPopup {
-        width:90%;
-        top: 10%;  
-        p{
+        width: 90%;
+        top: 10%;
+
+        p {
             font-size: .8rem;
-        } 
+        }
     }
 
     .weatherrow {
@@ -367,7 +400,8 @@ fieldset {
 }
 
 .leaflet-popup-content {
-    max-height: 300px; /* Begränsar höjden */
+    max-height: 300px;
+    /* Begränsar höjden */
 }
 
 @media screen and (max-width: 700px) {
@@ -376,10 +410,12 @@ fieldset {
         top: 0;
         left: 0;
         padding: 2px 4px;
+
         hover {
             background-color: var(--text-color);
         }
     }
+
     #weatherPopup {
         p {
             font-size: .65rem;
@@ -400,6 +436,7 @@ fieldset {
             font-size: 1.4rem;
             margin-top: .1rem;
         }
+
         h2 {
             display: none;
         }
@@ -407,16 +444,16 @@ fieldset {
 
     #search-container {
         margin-bottom: 2px;
-    
+
         button,
         input {
             font-size: .8rem;
             padding: .2rem;
             margin-bottom: .2rem;
         }
-    
+
     }
-    
+
     main {
         padding: .5rem;
         max-width: 100%;
@@ -429,15 +466,16 @@ fieldset {
         letter-spacing: normal;
     }
 
-  
+
     #info {
         width: 98%;
         padding-top: 0;
-        h2{
+
+        h2 {
             display: none;
         }
     }
-    
+
     .weatherrow {
 
         p {
@@ -467,18 +505,20 @@ fieldset {
 
     .leaflet-popup-content {
         max-height: 250px;
-        max-width: 350px; /* Begränsar bredden */
+        max-width: 350px;
+        /* Begränsar bredden */
     }
 }
 
 
 
-@media screen and (max-width: 450px){
+@media screen and (max-width: 450px) {
 
-    #weatherpop{
+    #weatherpop {
 
         width: 100%;
-        p{
+
+        p {
             font-size: .5rem;
         }
     }
@@ -499,15 +539,16 @@ fieldset {
         }
 
     }
-    
+
 }
 
-@media screen and (max-width: 350px){
+@media screen and (max-width: 350px) {
 
-    #weatherPopup{
+    #weatherPopup {
 
         width: 100%;
-        p{
+
+        p {
             font-size: .65rem;
         }
     }
@@ -531,6 +572,7 @@ fieldset {
 
     .leaflet-popup-content {
         max-height: 220px;
-        max-width: 230px; /* Begränsar bredden */
+        max-width: 230px;
+        /* Begränsar bredden */
     }
 }
