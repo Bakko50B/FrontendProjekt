@@ -268,7 +268,7 @@ async function findMyLocation() {
             .openPopup();
 
         // Använder `flyTo` för smidig animering 
-        map.flyTo([lat, lon], 11, { duration: 2 });
+        map.flyTo([lat, lon], 14, { duration: 5 });
 
         await showInfo(lat, lon);
     } catch (error) {
@@ -352,11 +352,7 @@ async function searchLocation() {
 async function travelToLocation(lat, lon) {
     try {
         map.closePopup(); // Stäng popup innan resan startar
-        await map.flyTo(map.getCenter(), 3, { easeLinearity: 0.1 }); // Zooma ut
-
-        await map.flyTo([lat, lon], 3, { easeLinearity: 0.1 }); // Flyg till destinationen
-
-        await map.flyTo([lat, lon], 13, { easeLinearity: 0.1 }); // Zooma in
+        map.flyTo([lat, lon], 14, { duration: 10, easeLinearity: .8 });
 
         userMarkerLayer.clearLayers(); // Rensa tidigare markörer
         L.marker([lat, lon])
@@ -403,7 +399,7 @@ map.on('click', function (e) {
 
     // Använd 'flyTo' för att animera kartan till den klickade platsen
     map.flyTo([lat, lon], targetZoom, {
-        duration: 2 // Animationens längd i sekunder
+        duration: 3 // Animationens längd i sekunder
     });
 
     // Rensa tidigare användarmarkörer
@@ -481,7 +477,7 @@ async function fetchWeather(lat, lon) {
     try {
         const response = await fetch(apiUrl, {
             headers: {
-                'User-Agent': 'MinApp/1.0 (minemail@example.com)'
+                'User-Agent': 'MinApp/1.0 (tolu2403@student.miun.se)'
             }
         });
         if (!response.ok) {

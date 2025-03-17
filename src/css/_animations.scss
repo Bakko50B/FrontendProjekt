@@ -1,3 +1,54 @@
+//Animerar kartan vid laddning
+@keyframes flipInXY {
+  0% {
+      transform: rotateX(90deg) rotateY(90deg);
+      /* Börjar med både X och Y rotation */
+  }
+
+  50% {
+      transform: rotateX(45deg) rotateY(45deg);
+      /* Halvvägs roterad */
+  }
+
+  100% {
+      transform: rotateX(0) rotateY(0);
+      /* Återgår till normalt läge */
+  }
+}
+
+//Animerar från osynlig till synlig
+@keyframes showtip {
+  0% {
+      opacity: 0;
+      visibility: hidden;
+  }
+
+  100% {
+      opacity: 1;
+      visibility: visible;
+  }
+}
+
+//popupen studsar
+@keyframes bounce {
+
+  0%,
+  20%,
+  50%,
+  80%,
+  100% {
+      transform: translateY(0);
+  }
+
+  40% {
+      transform: translateY(-30px);
+  }
+
+  60% {
+      transform: translateY(-15px);
+  }
+}
+
 @keyframes h1change{
     0%{
         transform: scale(1) rotate(0deg);
@@ -31,4 +82,17 @@
       text-shadow: 12px 8px 5px rgba(0, 0, 0, 0.25);
     }
   }
+
+  // Animering på vädersymbolerna
+@keyframes pulse {
+
+  0%,
+  100% {
+      transform: scale(1);
+  }
+
+  50% {
+      transform: scale(1.2);
+  }
+}
   

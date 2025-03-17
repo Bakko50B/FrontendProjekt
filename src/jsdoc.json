@@ -1,0 +1,12 @@
+{
+    "source": {
+      "include": ["."],   // Dokumentera alla filer i den aktuella katalogen
+      "includePattern": ".+\\.js$",   // Dokumentera endast .js-filer
+      "excludePattern": "(node_modules|docs)"   // Uteslut vissa mappar
+    },
+    "opts": {
+      "destination": "./docs",   // Plats där dokumentationen skapas
+      "recurse": true   // Dokumentera även undermappar
+    }
+  }
+  
