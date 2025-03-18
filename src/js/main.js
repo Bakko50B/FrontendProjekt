@@ -122,7 +122,7 @@ async function getNearbyPlaces(lat, lon) {
     }
 
     let categoriesString = categories.join(","); // Skapa kommaseparerad sträng av kategorier
-    console.log(categoriesString);
+    //console.log(categoriesString);
 
     const radius = 10000; // 10 km radie
     const url = `https://api.geoapify.com/v2/places?categories=${categoriesString}&filter=circle:${lon},${lat},${radius}&bias=proximity:${lon},${lat}&lang=sv&limit=20&apiKey=${placesApiKey}`;
@@ -520,6 +520,7 @@ const symbolCodeMap = {
     "fair_day": "🌤️",
     "fair_night": "🌛",
     "fog": "🌫️",
+    "heavysleet": "❄️💦",
     "partlycloudy_day": "⛅",
     "partlycloudy_night": "🌛☁️",
     "rain": "🌧️",
@@ -565,7 +566,7 @@ function generateForecastContent(timeseries) {
         const symbolCode = entry.data.next_1_hours?.summary.symbol_code || "unknown"; // Hämta symbol_code
         const symbol = symbolCodeMap[symbolCode] || "❓"; // Hämta ikon från map, standardvärde om koden saknas
 
-        //console.log(symbolCode); // Jobbat med att hitta alla olika symbolkoder
+        console.log(symbolCode); // Jobbat med att hitta alla olika symbolkoder
         let timeLabel = hourCounter === 0 ? "Nu: &nbsp;&nbsp;" : `+ ${hourCounter}h:`;
 
         content += `
