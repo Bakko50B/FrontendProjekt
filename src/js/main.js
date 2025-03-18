@@ -535,6 +535,7 @@ const symbolCodeMap = {
     "snowshowers_night": "🌨️🌙",
     "lightsnow": "🌨️",
     "lightsnowshowers_day": "🌨️",
+    "lightsnowshowers_night": "🌨️🌙",
     "heavysnow": "❄️❄️",
     "thunderstorm": "⛈️ ",
     "lightsleet": "🌨️💧",
