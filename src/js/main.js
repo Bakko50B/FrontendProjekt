@@ -561,7 +561,7 @@ const symbolCodeMap = {
  */
 function generateForecastContent(timeseries) {
 
-    let content = '<h2>12h prognos</h2><br><p>Från Yr.nu</p>';
+    let content = '<h2>12h prognos</h2><p>Från Yr.nu</p>';
     let hourCounter = 0; // Räknare för timmar
 
     timeseries.slice(0, 12).forEach(entry => {
