@@ -6,10 +6,10 @@ const placesApiKey = "798f5d6af0604b7da65c777059f5618d";    // Geoapify API Key
 const myNearmeButtonEl = document.getElementById("myLocation");
 myNearmeButtonEl.addEventListener('click', findMyLocation);
 
-// Lyssna efter ENTER-tangent i sökfältet
+
 const MySearchEl = document.getElementById("search-box");
 
-
+// Lyssna efter ENTER-tangent i sökfältet
 MySearchEl.addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
         searchLocation();
@@ -105,15 +105,12 @@ async function getWeather(lat, lon) {
  *
  * @async
  * @function getNearbyPlaces
- * @param {number} lat - Latitude of the user's location.
- * @param {number} lon - Longitude of the user's location.
- * @returns {Promise<string>} A string containing an HTML list of places with links, or an error message if no results are found or the request fails.
+ * @param {number} lat - Latitude på användarens location.
+ * @param {number} lon - Longitude på användarens location.
+ * @returns {Promise<string>} En string innehåller HTML med listor på platser med länkar, 
+ * Eller ett felmeddelande om något går fel.
  *
- * @throws {Error} If an issue occurs during the API call or fetching data.
- *
- * @example
- * const nearbyPlacesHtml = await getNearbyPlaces(59.3293, 18.0686); // Latitude and longitude for Stockholm
- * console.log(nearbyPlacesHtml); // Logs HTML list of nearby places
+ * @throws {Error} Om fel
  */
 async function getNearbyPlaces(lat, lon) {
     // Dynamiskt hämta valda kategorier från checkboxarna
@@ -129,8 +126,7 @@ async function getNearbyPlaces(lat, lon) {
 
     const radius = 10000; // 10 km radie
     const url = `https://api.geoapify.com/v2/places?categories=${categoriesString}&filter=circle:${lon},${lat},${radius}&bias=proximity:${lon},${lat}&lang=sv&limit=20&apiKey=${placesApiKey}`;
-    //console.log(url); 
-
+    
     try {
         attractionsLayer.clearLayers(); // Rensa tidigare sevärdhetsmarkörer
         const response = await fetch(url);
@@ -173,16 +169,16 @@ async function getNearbyPlaces(lat, lon) {
  *
  * @async
  * @function showInfo
- * @param {number} lat - Latitude of the location.
- * @param {number} lon - Longitude of the location.
- * @returns {Promise<void>} No return value, but updates the map and DOM.
+ * @param {number} lat - Latitud.
+ * @param {number} lon - Longitud.
+ * @returns {Promise<void>} Uppdaterarkartan och DOM.
  *
  * @description
  * Hämtar väderdata och platser i närheten baserat på latitude och longitude.
  * Visar informationen i en Leaflet popup.
  *
  * @example
- * await showInfo(59.3293, 18.0686); // Display info for Stockholm, Sweden
+ * await showInfo(59.3293, 18.0686); // Visar info för Stockholm, Sverige
  */
 async function showInfo(lat, lon) {
 
@@ -240,10 +236,10 @@ function getCurrentLocation() {
  * @description
  * Använder Geolocation för positionering.
  * Hanterar fel om det behövs 
- * @throws {Error} Throws an error if geolocation fails or an API request encounters a problem.
+ * @throws {Error} Kastar ett fel vid fel.
  *
  * @example
- * await findMyLocation(); // Fetch and display the user's current location on the map
+ * await findMyLocation(); // Hämtar och visar användarens position på kartan
  */
 async function findMyLocation() {
     if (!navigator.geolocation) {
@@ -400,7 +396,7 @@ map.on('click', function (e) {
 
     // Använd 'flyTo' för att animera kartan till den klickade platsen
     map.flyTo([lat, lon], targetZoom, {
-        duration: 3 // Animationens längd i sekunder
+        duration: 5 // Animationens längd i sekunder
     });
 
     // Rensa tidigare användarmarkörer
