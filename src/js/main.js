@@ -191,7 +191,7 @@ async function showInfo(lat, lon) {
     const toggleButton = document.getElementById('toggleForecast'); // Hämta knappen
 
     if (popup.style.display === 'block') {
-        popup.style.display = 'none'; // Stäng popupen
+        popup.style.display = 'none'; 
         toggleButton.textContent = 'Visa prognos'; // Uppdatera knappens text
     }
 
@@ -207,9 +207,9 @@ async function showInfo(lat, lon) {
 
     // Skapa och öppna popup på kartan
     L.popup({
-        autoPan: true, // Gör att kartan automatiskt panorerar för att visa popupen
-        autoPanPadding: [2, 20], // Marginal från kartkanten (20 pixlar horisontellt och vertikalt)
-        keepInView: true, // Se till att popupen alltid håller sig inom kartans vy
+        autoPan: true,              // Gör att kartan automatiskt panorerar för att visa popupen
+        autoPanPadding: [2, 20],    // Marginal från kartkanten (20 pixlar horisontellt och vertikalt)
+        keepInView: true,           // Se till att popupen alltid håller sig inom kartans vy
         offset: [0, -20 ] 
     })
         .setLatLng([lat, lon])
@@ -221,7 +221,8 @@ async function showInfo(lat, lon) {
  * Hämtar webbläsarens nuvarande position
  *
  * @function getCurrentLocation
- * @returns {Promise<GeolocationPosition>} A Promise that resolves with the user's current position, or rejects with an error if location access fails.
+ * @returns {Promise<GeolocationPosition>} Ett Promise som resolves med användarens position, 
+ * eller rejects med ett error om location access misslyckas.
  */
 function getCurrentLocation() {
     return new Promise((resolve, reject) => {
