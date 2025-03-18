@@ -81,7 +81,7 @@ let attractionsLayer = L.layerGroup().addTo(map);   // Lager för sevärdhetsmar
  * @throws {Error} If the API response is not OK (e.g., network issue or bad status code).
  *
  * @example
- * const weatherHtml = await getWeather(59.3293, 18.0686); // Stockholm, Sweden
+ * const weatherHtml = await getWeather(59.3293, 18.0686); // Stockholm, Sverige
  * console.log(weatherHtml);
  */
 async function getWeather(lat, lon) {
@@ -184,7 +184,7 @@ async function showInfo(lat, lon) {
 
     fetchWeather(lat, lon);
     const popup = document.getElementById('weatherPopup');
-    const toggleButton = document.getElementById('toggleForecast'); // Hämta knappen
+    const toggleButton = document.getElementById('toggleForecast'); // Knappen med väder
 
     if (popup.style.display === 'block') {
         popup.style.display = 'none'; 
@@ -469,6 +469,7 @@ document.getElementById('closePopup').addEventListener('click', () => {
  * await fetchWeather(59.3293, 18.0686); // Hämta väderdata för Stockholm
  */
 async function fetchWeather(lat, lon) {
+    
     const apiUrl = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
 
     try {
@@ -484,7 +485,7 @@ async function fetchWeather(lat, lon) {
 
         // Generera innehåll för popupen
         const forecastContent = generateForecastContent(data.properties.timeseries);
-        lastFetchedWeather = forecastContent; // Spara väderdatan för senare visning
+        lastFetchedWeather = forecastContent; // Spara väderdatan för visning
 
     } catch (error) {
         console.error('Något gick fel:', error);
@@ -568,7 +569,7 @@ function generateForecastContent(timeseries) {
         const symbolCode = entry.data.next_1_hours?.summary.symbol_code || "unknown"; // Hämta symbol_code
         const symbol = symbolCodeMap[symbolCode] || "❓"; // Hämta ikon från map, standardvärde om koden saknas
 
-        console.log(symbolCode); // Jobbat med att hitta alla olika symbolkoder
+        //console.log(symbolCode); // Jobbat med att hitta alla olika symbolkoder
         let timeLabel = hourCounter === 0 ? "Nu: &nbsp;&nbsp;" : `+ ${hourCounter}h:`;
 
         content += `
