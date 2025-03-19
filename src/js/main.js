@@ -464,10 +464,10 @@ document.getElementById('closePopup').addEventListener('click', () => {
  */
 async function fetchWeather(lat, lon) {
     
-    // const apiUrl = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
+    const apiUrl = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
     
-    const Url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
-    const apiUrl = `https://thingproxy.freeboard.io/fetch/${Url}`;
+    // const Url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
+    // const apiUrl = `https://thingproxy.freeboard.io/fetch/${Url}`;
 
     // const apiUrl = `https://thingproxy.freeboard.io/fetch/${Url}`;
 
