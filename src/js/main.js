@@ -6,7 +6,6 @@ const placesApiKey = "798f5d6af0604b7da65c777059f5618d";    // Geoapify API Key
 const myNearmeButtonEl = document.getElementById("myLocation");
 myNearmeButtonEl.addEventListener('click', findMyLocation);
 
-
 const MySearchEl = document.getElementById("search-box");
 
 // Lyssna efter ENTER-tangent i sökfältet
@@ -15,7 +14,6 @@ MySearchEl.addEventListener("keydown", function (event) {
         searchLocation();
     }
 });
-
 
 const myPlaceToSearchButtonEl = document.getElementById("placeToSearch");
 //tomt även om det finns mellanslag i den
@@ -53,7 +51,7 @@ const cloudsLayer = L.tileLayer(`https://tile.openweathermap.org/map/clouds_new/
 });
 
 // Lägg till standardlagret som startlager på kartan
-map.addLayer(baseLayer); // Viktigt: Baslager läggs till här
+map.addLayer(baseLayer); 
 
 // Skapa lagerkontroll för att växla mellan lager
 L.control.layers(
@@ -67,7 +65,7 @@ L.control.layers(
 ).addTo(map);
 
 let userMarkerLayer = L.layerGroup().addTo(map);    // Lager för användarens markör
-let attractionsLayer = L.layerGroup().addTo(map);   // Lager för sevärdhetsmarkörer
+let attractionsLayer = L.layerGroup().addTo(map);   // Lager för "sevärdhetsmarkörer"
 
 /**
  * Hämtar väderdata för en given position
@@ -306,7 +304,6 @@ async function searchLocation() {
 
         const url = `https://nominatim.openstreetmap.org/search?format=json&q=${query}`;
 
-        // Hämta platsdata
         const response = await fetch(url);
         if (!response.ok) throw new Error(`API-fel: ${response.status}`);
 
@@ -315,7 +312,6 @@ async function searchLocation() {
             const lat = parseFloat(data[0].lat);
             const lon = parseFloat(data[0].lon);
 
-            // Anropa funktionen för att skapa "flygresa" till platsen
             await travelToLocation(lat, lon);
         } else {
             alert(`Platsen "${query}" hittades inte.`);
@@ -412,13 +408,11 @@ map.on('click', function (e) {
         })
         .openPopup();
 
-    // Visa väder och sevärdheter för den klickade platsen
     showInfo(lat, lon);
 });
 
 // Variabel för att spara senaste hämtade väderdata
 let lastFetchedWeather = null;
-
 
 /**
  * Hanterar klickhändelsen på knappen för att visa eller dölja väderpopupen.
