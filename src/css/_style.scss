@@ -457,7 +457,7 @@ fieldset {
     }
 
     main {
-        padding: .5rem;
+        padding: 0;
         max-width: 100%;
     }
 
@@ -470,8 +470,8 @@ fieldset {
 
 
     #info {
-        width: 98%;
-        padding-top: 0;
+        width: 97%;
+        padding: 0.2rem;
 
         h2 {
             display: none;
