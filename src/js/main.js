@@ -464,7 +464,10 @@ document.getElementById('closePopup').addEventListener('click', () => {
  */
 async function fetchWeather(lat, lon) {
     
-    const apiUrl = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
+    //const apiUrl = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
+    
+    const Url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
+    const apiUrl = `https://thingproxy.freeboard.io/fetch/${Url}`;
 
     try {
         const response = await fetch(apiUrl, {
@@ -480,6 +483,7 @@ async function fetchWeather(lat, lon) {
         // Generera innehåll för popupen
         const forecastContent = generateForecastContent(data.properties.timeseries);
         lastFetchedWeather = forecastContent; // Spara väderdatan för visning
+        console.log(lastFetchedWeather);
 
     } catch (error) {
         console.error('Något gick fel:', error);
