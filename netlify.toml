@@ -1,3 +1,0 @@
-[build]
-  command = "npm run build && cp src/_headers dist/"
-  publish = "dist"
