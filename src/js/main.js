@@ -474,7 +474,7 @@ async function fetchWeather(lat, lon) {
     try {
         const response = await fetch(apiUrl, {
             headers: {
-                'User-Agent': 'Prejektwebbsida i Frontendkurs (tolu2403@student.miun.se)'
+                'User-Agent': 'Projektwebbsida i Frontendkurs (tolu2403@student.miun.se)'
             }
         });
         if (!response.ok) {
