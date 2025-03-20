@@ -472,11 +472,12 @@ async function fetchWeather(lat, lon) {
     // const apiUrl = `https://thingproxy.freeboard.io/fetch/${Url}`;
 
     try {
-        const response = await fetch(apiUrl, {
-            headers: {
-                'User-Agent': 'Projektwebbsida i Frontendkurs (tolu2403@student.miun.se)'
-            }
-        });
+         const response = await fetch(apiUrl //, {
+        //     // headers: {
+        //     //     'User-Agent': 'Projektwebbsida i Frontendkurs (tolu2403@student.miun.se)'
+        //     // }
+        // }
+        );
         if (!response.ok) {
             throw new Error(`HTTP-fel! Status: ${response.status}`);
         }
@@ -562,7 +563,7 @@ const symbolCodeMap = {
  */
 function generateForecastContent(timeseries) {
 
-    let content = '<h2>12h prognos</h2><p>Från Yr.nu</p>';
+    let content = '<h2>12h prognos</h2><p>Från Met Norway</p>';
     let hourCounter = 0; // Räknare för timmar
 
     timeseries.slice(0, 12).forEach(entry => {
