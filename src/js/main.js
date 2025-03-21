@@ -466,18 +466,8 @@ async function fetchWeather(lat, lon) {
     
     const apiUrl = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
     
-    // const Url = `https://api.met.no/weatherapi/locationforecast/2.0/compact?lat=${lat}&lon=${lon}`;
-    // const apiUrl = `https://thingproxy.freeboard.io/fetch/${Url}`;
-
-    // const apiUrl = `https://thingproxy.freeboard.io/fetch/${Url}`;
-
     try {
-         const response = await fetch(apiUrl //, {
-        //     // headers: {
-        //     //     'User-Agent': 'Projektwebbsida i Frontendkurs (tolu2403@student.miun.se)'
-        //     // }
-        // }
-        );
+         const response = await fetch(apiUrl);
         if (!response.ok) {
             throw new Error(`HTTP-fel! Status: ${response.status}`);
         }
